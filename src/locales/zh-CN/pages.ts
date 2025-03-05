@@ -1,3 +1,10 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/zh-CN/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title': 'Ant Design 是西湖区最具影响力的 Web 设计规范',
   'pages.login.accountLogin.tab': '账户密码登录',
@@ -64,4 +71,24 @@ export default {
   'pages.searchTable.tenThousand': '万',
   'pages.searchTable.batchDeletion': '批量删除',
   'pages.searchTable.batchApproval': '批量审批',
+  // 页面标题（通常会在布局或浏览器标签上显示）
+  'pages.publicHealthHotspots.title': '公共卫生热点',
+
+  // 查询相关
+  'pages.publicHealthHotspots.search.button': '查询',
+  'pages.publicHealthHotspots.search.placeholder': '请输入查询关键字',
+  'pages.publicHealthHotspots.search.emptyText': '暂无匹配数据',
+
+  // 列表渲染相关
+  'pages.publicHealthHotspots.list.title': '热点列表',
+  'pages.publicHealthHotspots.list.itemTitle': '标题',
+  'pages.publicHealthHotspots.list.itemDescription': '描述',
+  'pages.publicHealthHotspots.list.itemDate': '时间',
+  'pages.publicHealthHotspots.list.noData': '暂无数据',
+  'pages.publicHealthHotspots.list.loadError': '数据加载失败，请稍后重试',
+  'pages.publicHealthHotspots.list.loadSuccess': '数据加载成功',
+
+  // 接口调用提示
+  'pages.publicHealthHotspots.api.callError': '接口调用失败，请稍后重试',
+  'pages.publicHealthHotspots.api.callSuccess': '接口调用成功',
 };

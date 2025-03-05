@@ -1,3 +1,10 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/en-US/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title':
     'Ant Design is the most influential web design specification in Xihu district',
@@ -67,4 +74,24 @@ export default {
   'pages.searchTable.tenThousand': '0000',
   'pages.searchTable.batchDeletion': 'batch deletion',
   'pages.searchTable.batchApproval': 'batch approval',
+   // 页面标题
+   'pages.publicHealthHotspots.title': 'Public Health Hotspots',
+
+   // 查询
+   'pages.publicHealthHotspots.search.button': 'Search',
+   'pages.publicHealthHotspots.search.placeholder': 'Please enter keywords',
+   'pages.publicHealthHotspots.search.emptyText': 'No matching data',
+
+   // 列表渲染
+   'pages.publicHealthHotspots.list.title': 'Hotspots List',
+   'pages.publicHealthHotspots.list.itemTitle': 'Title',
+   'pages.publicHealthHotspots.list.itemDescription': 'Description',
+   'pages.publicHealthHotspots.list.itemDate': 'Date',
+   'pages.publicHealthHotspots.list.noData': 'No data available',
+   'pages.publicHealthHotspots.list.loadError': 'Failed to load data, please try again later',
+   'pages.publicHealthHotspots.list.loadSuccess': 'Data loaded successfully',
+
+   // 接口调用提示
+   'pages.publicHealthHotspots.api.callError': 'API call failed, please try again later',
+   'pages.publicHealthHotspots.api.callSuccess': 'API call succeeded',
 };
