@@ -103,9 +103,8 @@ export async function removeRule(options?: { [key: string]: any }) {
 export async function getHotpot(options?: { [key: string]: any }){
   return request<Record<string, any>>('/api/news', {
     method: 'POST',
-    data:{
-      method: 'post',
-      ...(options || {}),
+    headers: {
+      'Content-Type': 'application/json',
     }
   });
 }
