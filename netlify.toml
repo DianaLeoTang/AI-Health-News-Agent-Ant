@@ -4,3 +4,9 @@
   status = 200
   force = true
   headers = { X-From = "Netlify" }
+
+  [[redirects]]
+  from = "/api/login/account*"
+  to = "https://ai-health-news-back.netlify.app/.netlify/functions/api/login/account:splat"
+  status = 200
+  force = true
