@@ -19,12 +19,22 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
+// 获取环境变量中的API URL或使用默认值
+const getBaseUrl = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.API_URL || 'https://ai-health-news-back.netlify.app';
+  }
+  return '/api'; // 开发环境使用代理
+};
 /**
  * @name 错误处理
  * pro 自带的错误处理， 可以在这里做自己的改动
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const errorConfig: RequestConfig = {
+  // 添加基础URL配置
+  baseURL: getBaseUrl(),
+
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误抛出
