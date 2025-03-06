@@ -1,4 +1,5 @@
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "https://ai-health-news-back.netlify.app/.netlify/functions/api/:splat"
   status = 200
+  force = true
