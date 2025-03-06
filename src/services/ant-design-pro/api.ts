@@ -10,12 +10,12 @@
 import { request } from '@umijs/max';
 const baseURL = process.env.NODE_ENV === 'production'
   ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
-  : '/api';
+  : 'http://localhost:4000';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
     data: API.CurrentUser;
-  }>(`${baseURL}//currentUser`, {
+  }>(`${baseURL}/currentUser`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -23,7 +23,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`${baseURL}//login/outLogin`, {
+  return request<Record<string, any>>(`${baseURL}/login/outLogin`, {
     method: 'POST',
     ...(options || {}),
   });
@@ -31,7 +31,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(`${baseURL}//login/account`, {
+  return request<API.LoginResult>(`${baseURL}/login/account`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
-  return request<API.NoticeIconList>(`${baseURL}//notices`, {
+  return request<API.NoticeIconList>(`${baseURL}/notices`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -60,7 +60,7 @@ export async function rule(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>(`${baseURL}//rule`, {
+  return request<API.RuleList>(`${baseURL}/rule`, {
     method: 'GET',
     params: {
       ...params,
@@ -71,7 +71,7 @@ export async function rule(
 
 /** 更新规则 PUT /api/rule */
 export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>(`${baseURL}//rule`, {
+  return request<API.RuleListItem>(`${baseURL}/rule`, {
     method: 'POST',
     data:{
       method: 'update',
@@ -82,7 +82,7 @@ export async function updateRule(options?: { [key: string]: any }) {
 
 /** 新建规则 POST /api/rule */
 export async function addRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>(`${baseURL}//rule`, {
+  return request<API.RuleListItem>(`${baseURL}/rule`, {
     method: 'POST',
     data:{
       method: 'post',
@@ -93,7 +93,7 @@ export async function addRule(options?: { [key: string]: any }) {
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`${baseURL}//rule`, {
+  return request<Record<string, any>>(`${baseURL}/rule`, {
     method: 'POST',
     data:{
       method: 'delete',
@@ -103,7 +103,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 }
 // 热点新闻接口
 export async function getHotpot(options?: { [key: string]: any }){
-  return request<Record<string, any>>(`${baseURL}//news`, {
+  return request<Record<string, any>>(`${baseURL}/news`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
