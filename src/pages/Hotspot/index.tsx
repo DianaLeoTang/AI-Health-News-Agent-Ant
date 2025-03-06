@@ -71,7 +71,7 @@ const Hotspot: React.FC = () => {
               itemNew.status === 'success' && (
                 <>
                   <div key={index} style={{ marginBottom: '20px', textAlign: 'center' }}>
-                    <a href={itemNew.extracted?.url}>
+                    <a href={itemNew.extracted?.url} target="_blank" rel="noreferrer" >
                       <Tag color="purple" style={{ fontSize: '18px' }}>
                         {itemNew.extracted?.title}
                       </Tag>
@@ -90,7 +90,11 @@ const Hotspot: React.FC = () => {
                                 <FireTwoTone /> <span>{linkIndex + 1}.</span>
                               </>
                             }
-                            title={<a href={item.url}>{item.text}</a>}
+                            title={
+                              <a href={item.url} target="_blank" rel="noreferrer" >
+                                {item.text}
+                              </a>
+                            }
                           />
                         </List.Item>
                       )}
