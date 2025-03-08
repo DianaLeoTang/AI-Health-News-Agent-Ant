@@ -22,7 +22,7 @@ export default {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/': {
       // 要代理的地址
-      target: 'http://localhost:3000',
+      target: 'http://localhost:8888',
       // 配置了这个可以从 http 代理到 https
       pathRewrite: { '^/api': '' },
       // 依赖 origin 的功能可能需要这个，比如 cookie
@@ -37,14 +37,14 @@ export default {
   test: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/': {
-      target: 'http://localhost:3000',
+      target: 'http://localhost:8888/.netlify/functions',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   pre: {
     '/api/': {
-      target: 'http://localhost:3000',
+      target: 'http://localhost:8888/.netlify/functions',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

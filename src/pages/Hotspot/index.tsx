@@ -73,15 +73,15 @@ const Hotspot: React.FC = () => {
                   <div key={index} style={{ marginBottom: '20px', textAlign: 'center' }}>
                     <a href={itemNew.extracted?.url} target="_blank" rel="noreferrer" >
                       <Tag color="purple" style={{ fontSize: '18px' }}>
-                        {itemNew.extracted?.title}
+                        {itemNew.title}
                       </Tag>
                     </a>
                   </div>
                   {/* 二级标题：使用List组件渲染links数组 */}
-                  {itemNew.extracted?.links && itemNew.extracted?.links.length > 0 && (
+                  {itemNew.links && itemNew.links.length > 0 && (
                     <List
                       itemLayout="horizontal"
-                      dataSource={itemNew.extracted.links}
+                      dataSource={itemNew.links}
                       renderItem={(item, linkIndex) => (
                         <List.Item>
                           <List.Item.Meta
@@ -92,7 +92,7 @@ const Hotspot: React.FC = () => {
                             }
                             title={
                               <a href={item.url} target="_blank" rel="noreferrer" >
-                                {item.text}
+                                {item.title}
                               </a>
                             }
                           />
@@ -101,10 +101,10 @@ const Hotspot: React.FC = () => {
                     />
                   )}
                   {/* 检查articles数组是否不为空，如果不为空则使用List组件渲染 */}
-                  {itemNew.extracted?.articles && itemNew.extracted?.articles.length > 0 && (
+                  {itemNew.articles && itemNew.articles.length > 0 && (
                     <List
                       pagination={{ position, align, defaultPageSize }}
-                      dataSource={itemNew.extracted.articles}
+                      dataSource={itemNew.articles}
                       renderItem={(article, articleIndex) => (
                         <List.Item>
                           <List.Item.Meta
