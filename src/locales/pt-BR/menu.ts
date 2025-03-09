@@ -12,6 +12,7 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.hotspot': 'PublicHealthHot',
+  'menu.hotspot': 'PublicHealthHot',
   'menu.login': 'Login',
   'menu.register': 'Registro',
   'menu.register-result': 'Resultado de registro',

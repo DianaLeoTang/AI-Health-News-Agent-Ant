@@ -58,6 +58,13 @@ export default [
       },
     ],
   },
+  // 新增顶层路由，所有用户可访问
+  {
+    path: '/hotspot',
+    name: 'hotspot',
+    icon: 'fire', // 可以选择适合的图标
+    component: './Hotspot',
+  },
   {
     name: 'list.table-list',
     icon: 'table',

@@ -12,6 +12,7 @@ export default {
   'menu.admin': '管理页',
   'menu.admin.sub-page': '二级管理页',
   'menu.admin.hotspot': '公共卫生热点',
+  'menu.hotspot': '公共卫生热点',
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register-result': '注册结果',

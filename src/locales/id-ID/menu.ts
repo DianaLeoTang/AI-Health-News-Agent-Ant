@@ -12,6 +12,7 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Halaman',
   'menu.admin.hotspot': 'Hotspot kesehatan masyarakat',
+  'menu.hotspot': 'Hotspot kesehatan masyarakat',
   'menu.login': 'Masuk',
   'menu.register': 'Pendaftaran',
   'menu.register-result': 'Hasil Pendaftaran',

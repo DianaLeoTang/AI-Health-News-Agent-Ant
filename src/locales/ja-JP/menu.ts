@@ -12,6 +12,7 @@ export default {
   'menu.admin': '管理者',
   'menu.admin.sub-page': 'サブページ',
   'menu.admin.hotspot': '公衆衛生ホットスポットです',
+  'menu.hotspot': '公衆衛生ホットスポットです',
   'menu.login': 'ログイン',
   'menu.register': '登録',
   'menu.register-result': '登録結果',

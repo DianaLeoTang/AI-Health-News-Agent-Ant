@@ -12,6 +12,7 @@ export default {
   'menu.admin': 'অ্যাডমিন',
   'menu.admin.sub-page': 'উপ-পৃষ্ঠা',
   'menu.admin.hotspot': 'জনস্বাস্থ্য হটস্পট',
+  'menu.hotspot': 'জনস্বাস্থ্য হটস্পট',
   'menu.login': 'প্রবেশ',
   'menu.register': 'নিবন্ধন',
   'menu.register-result': 'নিবন্ধনে ফলাফল',

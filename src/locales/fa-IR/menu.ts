@@ -12,6 +12,7 @@ export default {
   'menu.admin': 'مدیر',
   'menu.admin.sub-page': 'زیر صفحه',
   'menu.admin.hotspot': 'نقطه داغ بهداشت عمومی',
+  'menu.hotspot': 'نقطه داغ بهداشت عمومی',
   'menu.login': 'ورود',
   'menu.register': 'ثبت نام',
   'menu.register-result': 'ثبت نام نتیجه',
