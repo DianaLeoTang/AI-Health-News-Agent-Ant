@@ -56,6 +56,11 @@ export default [
         name: 'hotspot',
         component: './Hotspot', // 对应 src/pages/Hotspot/index.tsx
       },
+      {
+        path: '/admin/upload',
+        name: 'upload',
+        component: './Upload', // 对应 src/pages/Hotspot/index.tsx
+      },
     ],
   },
   // 新增顶层路由，所有用户可访问
