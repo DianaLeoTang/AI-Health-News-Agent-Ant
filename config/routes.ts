@@ -63,8 +63,17 @@ export default [
     path: '/hotspot',
     name: 'hotspot',
     icon: 'fire', // 可以选择适合的图标
-    component: './Hotspot',
+    component: './SimpleHotspot',
   },
+  // {
+  //   path: '/',
+  //   component: '@/layouts/BasicLayout',
+  //   routes: [
+  //     { path: '/', component: '@/pages/Bookshelf' },
+  //     { path: '/reader/:bookId', component: '@/pages/NovelReader' },
+  //     { path: '/upload', component: '@/pages/Upload' },
+  //   ],
+  // },
   {
     name: 'list.table-list',
     icon: 'table',
