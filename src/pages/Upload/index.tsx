@@ -14,6 +14,7 @@ import {
 import { InboxOutlined, FileTextOutlined, FilePdfOutlined, UploadOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import styles from './index.less';
+import {unloadFile} from '../../services/ant-design-pro/api.ts'
 
 const { Dragger } = Upload;
 const { Title, Text } = Typography;
@@ -64,66 +65,17 @@ const UploadPage: React.FC = () => {
     }
 
     setUploading(true);
-    setUploadProgress(0);
-
-    // 创建FormData对象
-    const formData = new FormData();
-    formData.append('file', file);
 
     try {
-      // 使用XMLHttpRequest来获取上传进度
-      const xhr = new XMLHttpRequest();
+      const response = await unloadFile(file);
 
-      // 监听上传进度
-      xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded / event.total) * 100);
-          setUploadProgress(percent);
-        }
-      });
-
-      // 处理完成事件
-      xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          // 上传成功，但还在处理文件
-          setConvertingFile(true);
-
-          setTimeout(() => {
-            try {
-              const response: UploadResponse = JSON.parse(xhr.responseText);
-              message.success('文件上传并转换成功!');
-
-              // 跳转到阅读页
-              history.push(`/reader/${response.book.id}`);
-            } catch (error) {
-              message.error('解析响应失败');
-              setUploading(false);
-              setConvertingFile(false);
-            }
-          }, 1000); // 模拟文件处理时间
-        } else {
-          message.error('文件上传失败，请稍后重试');
-          setUploading(false);
-          setConvertingFile(false);
-        }
-      });
-
-      // 处理错误
-      xhr.addEventListener('error', () => {
-        message.error('文件上传失败，请稍后重试');
-        setUploading(false);
-        setConvertingFile(false);
-      });
-
-      // 发送请求 - 使用统一的接口地址
-      xhr.open('POST', '/api/novels/upload', true);
-      xhr.send(formData);
-
+      message.success('文件上传成功!');
+      history.push(`/reader/${response.book.id}`);
     } catch (error) {
       console.error('上传过程中发生错误:', error);
       message.error('上传失败，请稍后重试');
+    } finally {
       setUploading(false);
-      setConvertingFile(false);
     }
   };
 
@@ -208,14 +160,19 @@ const UploadPage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <Dragger {...uploadProps} className={styles.dragger}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">点击或拖拽文件到此区域选择文件</p>
-            <p className="ant-upload-hint">
-              仅支持单个PDF文件，文件大小不超过50MB
-            </p>
+          <div className={styles.draggerContainer}>
+            <Dragger {...uploadProps} className={styles.dragger}
+              // 防止点击触发上传
+              openFileDialogOnClick={file ? false : true}
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">点击或拖拽文件到此区域选择文件</p>
+              <p className="ant-upload-hint">
+                仅支持单个PDF文件，文件大小不超过50MB
+              </p>
+            </Dragger>
 
             {file && (
               <div className={styles.selectedFile}>
@@ -236,7 +193,7 @@ const UploadPage: React.FC = () => {
                 </Button>
               </div>
             )}
-          </Dragger>
+          </div>
         )}
 
         {uploading && !convertingFile && (

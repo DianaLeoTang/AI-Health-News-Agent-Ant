@@ -110,3 +110,13 @@ export async function getHotpot(options?: { [key: string]: any }){
     }
   });
 }
+// 热点新闻接口
+export async function unloadFile(file: File){
+  const formData = new FormData();
+  formData.append('file', file);
+  return request<Record<string, any>>(`${baseURL}/novels/upload`, {
+    method: 'POST',
+    requestType: 'form', // 指定请求类型为form
+    data: formData, // 使用data而不是body
+  });
+}
