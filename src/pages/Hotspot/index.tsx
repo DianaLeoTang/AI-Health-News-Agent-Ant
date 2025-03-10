@@ -7,7 +7,7 @@
  */
 import { FireTwoTone, SearchOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { Button, Card, List, Tag } from 'antd';
+import { Button, Card, List, Tag,Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { getHotpot } from '@/services/ant-design-pro/api';
@@ -25,7 +25,7 @@ interface NewsItem {
 const Hotspot: React.FC = () => {
   const [position, setPosition] = useState<PaginationPosition>('bottom');
   const [align, setAlign] = useState<PaginationAlign>('end');
-  const [defaultPageSize] = useState(100);
+  const [defaultPageSize] = useState(50);
   const [news, setNews] = useState<NewsItem[]>(newsMock);
   const [loading, setLoading] = useState(true);
   const intl = useIntl();
@@ -64,6 +64,7 @@ const Hotspot: React.FC = () => {
             defaultMessage: 'Search',
           })}
         </Button>
+        <Spin spinning={loading}>
         {/* 第一级标题：提取extracted中的title和url，用Tag组件渲染 */}
         {news &&
           news.map(
@@ -128,6 +129,7 @@ const Hotspot: React.FC = () => {
                 </>
               ),
           )}
+      </Spin>
       </Card>
     </>
   );
