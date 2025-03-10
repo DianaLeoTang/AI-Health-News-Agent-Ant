@@ -6,16 +6,17 @@ import {
   message,
   Card,
   Typography,
-  Spin,
+  Table,
   Progress,
+  Space,
   Alert,
   Input
 } from 'antd';
-import { InboxOutlined, FileTextOutlined, FilePdfOutlined, UploadOutlined } from '@ant-design/icons';
+import { InboxOutlined, FileTextOutlined, FilePdfOutlined, UploadOutlined,FileOutlined,DownloadOutlined,DeleteOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import styles from './index.less';
-import {unloadFile} from '../../services/ant-design-pro/api.ts'
-
+import {unloadFile} from '../../services/ant-design-pro/api'
+import {formatFileSize,getSimpleFileType,currentDate} from '../../utils/fileData'
 const { Dragger } = Upload;
 const { Title, Text } = Typography;
 
@@ -28,13 +29,101 @@ interface UploadResponse {
     chapterCount: number;
   }
 }
+// 定义文件数据项的接口
+interface FileDataItem {
+  key: string;
+  originalName: string;
+  size: string;
+  mimeType: string;
+  date: string;
+}
 
+// 定义文件数据数组的类型
+type FileDataArray = FileDataItem[];
+const fileData: FileDataArray = [
+  {
+    key: "1",
+    originalName: "Project_Document.pdf",
+    size: "1.2 MB",
+    mimeType: "PDF",
+    date: "2025-03-11",
+  },
+  {
+    key: "2",
+    originalName: "UI_Design.sketch",
+    size: "4.5 MB",
+    mimeType: "Sketch",
+    date: "2025-03-10",
+  },
+  {
+    key: "3",
+    originalName: "README.md",
+    size: "12 KB",
+    mimeType: "Markdown",
+    date: "2025-03-09",
+  },
+];
 const UploadPage: React.FC = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [convertingFile, setConvertingFile] = useState<boolean>(false);
   const [manualUploadVisible, setManualUploadVisible] = useState<boolean>(false);
+  const [tableData,setTableData]=useState<FileDataArray>(fileData)
+
+
+
+    const columns = [
+      {
+        title: "文件名称",
+        dataIndex: "originalName",
+        key: "originalName",
+        render: (text) => (
+          <Space>
+            <FileOutlined style={{ color: "#1890ff" }} />
+            <Text>{text}</Text>
+          </Space>
+        ),
+      },
+      {
+        title: "大小",
+        dataIndex: "size",
+        key: "size",
+      },
+      {
+        title: "类型",
+        dataIndex: "mimeType",
+        key: "mimeType",
+      },
+      {
+        title: "修改日期",
+        dataIndex: "date",
+        key: "date",
+      },
+      {
+        title: "操作",
+        key: "actions",
+        render: (_, record) => (
+          <Space>
+            <Button type="link" icon={<DownloadOutlined />} onClick={() => handleDownload(record)}>
+              下载
+            </Button>
+            <Button type="link" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
+              删除
+            </Button>
+          </Space>
+        ),
+      },
+    ];
+
+    const handleDownload = (file) => {
+      console.log("下载文件:", file.originalName);
+    };
+
+    const handleDelete = (file) => {
+      console.log("删除文件:", file.originalName);
+    };
+
 
   // 手动上传文件处理
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -68,9 +157,21 @@ const UploadPage: React.FC = () => {
 
     try {
       const response = await unloadFile(file);
-
+      const {originalName,size,mimeType}=response?.file
+      // 创建新的文件数据对象
+      const newFileData = {
+        key: (fileData.length + 1).toString(),
+        originalName: originalName,
+        size: formatFileSize(size),
+        mimeType: getSimpleFileType(mimeType),
+        date: currentDate,
+      };
+      const realData=[...fileData,newFileData]
+      // 将新文件数据添加到数组中
+      // fileData.push(newFileData);
+      setTableData(realData)
       message.success('文件上传成功!');
-      history.push(`/reader/${response.book.id}`);
+      // history.push(`/reader/${response.book.id}`);
     } catch (error) {
       console.error('上传过程中发生错误:', error);
       message.error('上传失败，请稍后重试');
@@ -195,22 +296,8 @@ const UploadPage: React.FC = () => {
             )}
           </div>
         )}
-
-        {uploading && !convertingFile && (
-          <div className={styles.progress}>
-            <Text>正在上传...</Text>
-            <Progress percent={uploadProgress} />
-          </div>
-        )}
-
-        {convertingFile && (
-          <div className={styles.converting}>
-            <Spin />
-            <Text>正在转换文件为小说阅读格式，请稍候...</Text>
-          </div>
-        )}
-
-        <div className={styles.fileTypes}>
+        <Table columns={columns} dataSource={tableData} pagination={{ pageSize: 5 }} />
+        {/* <div className={styles.fileTypes}>
           <div className={styles.fileType}>
             <FilePdfOutlined className={styles.fileIcon} />
             <Text>PDF</Text>
@@ -220,7 +307,7 @@ const UploadPage: React.FC = () => {
             <FileTextOutlined className={styles.fileIcon} />
             <Text>小说格式</Text>
           </div>
-        </div>
+        </div> */}
       </Card>
     </div>
   );
