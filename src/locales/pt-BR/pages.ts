@@ -1,13 +1,20 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/pt-BR/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title':
     'Ant Design é a especificação de web design mais influente no distrito de Xihu',
   'pages.login.accountLogin.tab': 'Login da conta',
-  'pages.login.accountLogin.errorMessage': 'usuário/senha incorreto(admin/ant.design)',
+  'pages.login.accountLogin.errorMessage': 'usuário/senha incorreto(user/666)',
   'pages.login.failure': 'Login falhou, por favor tente novamente!',
   'pages.login.success': 'Login efetuado com sucesso!',
-  'pages.login.username.placeholder': 'Usuário: admin or user',
+  'pages.login.username.placeholder': 'Usuário: user',
   'pages.login.username.required': 'Por favor insira seu usuário!',
-  'pages.login.password.placeholder': 'Senha: ant.design',
+  'pages.login.password.placeholder': 'Senha: 666',
   'pages.login.password.required': 'Por favor insira sua senha!',
   'pages.login.phoneLogin.tab': 'Login com Telefone',
   'pages.login.phoneLogin.errorMessage': 'Erro de Código de Verificação',

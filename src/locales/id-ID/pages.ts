@@ -1,13 +1,20 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/id-ID/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title':
     'Ant Design adalah spesifikasi desain Web yang paling berpengaruh di Kabupaten Xihu',
   'pages.login.accountLogin.tab': 'Login dengan akun',
-  'pages.login.accountLogin.errorMessage': 'Nama pengguna dan kata sandi salah(admin/ant.design)',
+  'pages.login.accountLogin.errorMessage': 'Nama pengguna dan kata sandi salah(user/666)',
   'pages.login.failure': 'Log masuk gagal, silakan coba lagi!',
   'pages.login.success': 'Login berhasil!',
-  'pages.login.username.placeholder': 'nama pengguna: admin atau user',
+  'pages.login.username.placeholder': 'nama pengguna:user',
   'pages.login.username.required': 'Nama pengguna harus diisi!',
-  'pages.login.password.placeholder': 'kata sandi: ant.design',
+  'pages.login.password.placeholder': 'kata sandi:666',
   'pages.login.password.required': 'Kata sandi harus diisi!',
   'pages.login.phoneLogin.tab': 'Login dengan ponsel',
   'pages.login.phoneLogin.errorMessage': 'Kesalahan kode verifikasi',

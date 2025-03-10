@@ -1,12 +1,19 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/zh-TW/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title': 'Ant Design 是西湖區最具影響力的 Web 設計規範',
   'pages.login.accountLogin.tab': '賬戶密碼登錄',
-  'pages.login.accountLogin.errorMessage': '錯誤的用戶名和密碼(admin/ant.design)',
+  'pages.login.accountLogin.errorMessage': '錯誤的用戶名和密碼(user/666)',
   'pages.login.failure': '登錄失敗，請重試！',
   'pages.login.success': '登錄成功！',
-  'pages.login.username.placeholder': '用戶名: admin or user',
+  'pages.login.username.placeholder': '用戶名: user',
   'pages.login.username.required': '用戶名是必填項！',
-  'pages.login.password.placeholder': '密碼: ant.design',
+  'pages.login.password.placeholder': '密碼: 666',
   'pages.login.password.required': '密碼是必填項！',
   'pages.login.phoneLogin.tab': '手機號登錄',
   'pages.login.phoneLogin.errorMessage': '驗證碼錯誤',

@@ -1,12 +1,19 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/fa-IR/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title': 'طراحی مورچه تأثیرگذارترین مشخصات طراحی وب در منطقه Xihu است',
   'pages.login.accountLogin.tab': 'ورود به حساب کاربری',
-  'pages.login.accountLogin.errorMessage': 'نام کاربری / رمزعبور نادرست (مدیر / ant.design)',
+  'pages.login.accountLogin.errorMessage': 'نام کاربری / رمزعبور نادرست (مدیر / 666)',
   'pages.login.failure': 'ورود به سیستم با شکست مواجه شد، لطفا دوباره سعی کنید!',
   'pages.login.success': 'ورود موفق!',
   'pages.login.username.placeholder': 'نام کاربری: مدیر یا کاربر',
   'pages.login.username.required': 'لطفا نام کاربری خود را وارد کنید!',
-  'pages.login.password.placeholder': 'رمز عبور: ant.design',
+  'pages.login.password.placeholder': 'رمز عبور: 666',
   'pages.login.password.required': 'لطفاً رمز ورود خود را وارد کنید!',
   'pages.login.phoneLogin.tab': 'ورود به سیستم تلفن',
   'pages.login.phoneLogin.errorMessage': 'خطای کد تأیید',

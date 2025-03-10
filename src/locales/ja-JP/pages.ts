@@ -1,13 +1,20 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-03-05 12:29:45
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/locales/ja-JP/pages.ts
+ */
 export default {
   'pages.layouts.userLayout.title': 'Ant Designは、西湖区で最も影響力のあるWebデザイン仕様です。',
   'pages.login.accountLogin.tab': 'アカウントログイン',
   'pages.login.accountLogin.errorMessage':
-    'ユーザー名/パスワードが正しくありません(admin/ant.design)',
+    'ユーザー名/パスワードが正しくありません(user/666)',
   'pages.login.failure': 'ログインに失敗したら、もう一度試してください!',
   'pages.login.success': 'ログイン成功!',
-  'pages.login.username.placeholder': 'ユーザー名：adminまたはuser',
+  'pages.login.username.placeholder': 'ユーザー名：user',
   'pages.login.username.required': 'ユーザー名を入力してください！',
-  'pages.login.password.placeholder': 'パスワード：ant.design',
+  'pages.login.password.placeholder': 'パスワード：666',
   'pages.login.password.required': 'パスワードを入力してください！',
   'pages.login.phoneLogin.tab': '電話ログイン',
   'pages.login.phoneLogin.errorMessage': '検証コードエラー',
