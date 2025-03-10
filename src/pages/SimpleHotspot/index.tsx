@@ -43,7 +43,7 @@ const Hotspot: React.FC = () => {
 
       const data = response.data;
       console.log('获取到的数据:', data);
-      const defaultProcessed = processDataForDisplay(data||[]);
+      const defaultProcessed = processDataForDisplay(data||[],{maxLinks: 30,});
       console.log('获取到的数据修改后:', defaultProcessed);
       setNews(defaultProcessed);
     } catch (error) {
