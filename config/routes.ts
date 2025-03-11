@@ -63,6 +63,39 @@ export default [
       },
     ],
   },
+  {
+    path: '/book',
+    name: 'book',
+    icon: 'crown',
+    access: 'canAdmin',
+    routes: [
+      {
+        path: '/book',
+        redirect: '/book/epidemiology',
+      },
+      {
+        path: '/book/epidemiology',
+        name: 'epidemiology',
+        component: './Admin',
+      },
+      {
+        path: '/book/public-health',
+        name: 'public-health',
+        component: './Hotspot', // 对应 src/pages/Hotspot/index.tsx
+      },
+      {
+        path: '/book/social-medicine',
+        name: 'social-medicine',
+        component: './NovelReader', // 对应 src/
+        // pages/Hotspot/index.tsx
+      },
+      {
+        path: '/book/statistics',
+        name: 'statistics',
+        component: './Admin',
+      },
+    ],
+  },
   // 新增顶层路由，所有用户可访问
   {
     path: '/hotspot',

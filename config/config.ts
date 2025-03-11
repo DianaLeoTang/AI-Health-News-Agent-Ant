@@ -153,11 +153,11 @@ export default defineConfig({
   },
   esbuildMinifyIIFE: true,
   requestRecord: {},
-  // // 添加或修改 define 配置
-  // define: {
-  //   'process.env.API_URL': process.env.API_URL,
-  // },
-  // // 其他配置...
-  // copy: ['netlify.toml'],
+  // 添加或修改 define 配置
+  define: {
+    'process.env.API_URL': process.env.API_URL,
+  },
+  // 其他配置...
+  copy: ['netlify.toml'],
 
 });
