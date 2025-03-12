@@ -43,26 +43,62 @@ type FileDataArray = FileDataItem[];
 const fileData: FileDataArray = [
   {
     key: "1",
-    originalName: "Project_Document.pdf",
-    size: "1.2 MB",
+    originalName: "公共卫生与预防医学导论.pdf",
+    size: "28.07 MB",
     mimeType: "PDF",
-    date: "2025-03-11",
+    date: "2025-03-12",
   },
   {
     key: "2",
-    originalName: "UI_Design.sketch",
-    size: "4.5 MB",
-    mimeType: "Sketch",
-    date: "2025-03-10",
+    originalName: "卫生统计学第八版 李晓松.pdf",
+    size: "55.27 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
   },
   {
     key: "3",
-    originalName: "README.md",
-    size: "12 KB",
-    mimeType: "Markdown",
-    date: "2025-03-09",
+    originalName: "流行病学_第9版.pdf",
+    size: "28.34 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
+  },
+  {
+    key: "4",
+    originalName: "流行病学（第8版）.pdf",
+    size: "107 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
+  },
+  {
+    key: "5",
+    originalName: "环境卫生学（第8版）.pdf",
+    size: "115.57 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
+  },
+  {
+    key: "6",
+    originalName: "社会医学 第5版.pdf",
+    size: "52.44 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
+  },
+  {
+    key: "7",
+    originalName: "职业卫生与职业医学（第8版）.pdf",
+    size: "108.8 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
+  },
+  {
+    key: "8",
+    originalName: "营养与食品卫生学（第8版）.pdf",
+    size: "121.57 MB",
+    mimeType: "PDF",
+    date: "2025-03-12",
   },
 ];
+
 const UploadPage: React.FC = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);

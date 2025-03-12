@@ -56,10 +56,15 @@ export default [
         name: 'hotspot',
         component: './Hotspot', // 对应 src/pages/Hotspot/index.tsx
       },
+      // {
+      //   path: '/admin/upload',
+      //   name: 'upload',
+      //   component: './Upload', // 对应 src/pages/Hotspot/index.tsx
+      // },
       {
-        path: '/admin/upload',
-        name: 'upload',
-        component: './Upload', // 对应 src/pages/Hotspot/index.tsx
+        path: '/admin/download',
+        name: 'download',
+        component: './Download', // 对应 src/pages/Hotspot/index.tsx
       },
     ],
   },

@@ -18,6 +18,7 @@ export default {
   'menu.book.social-medicine': '社会医学',
   'menu.book.statistics': '卫生统计学',
   'menu.admin.upload':'上传页面',
+  "menu.admin.download":'下载页面',
   'menu.hotspot': '公共衛生熱點',
   'menu.login': '登錄',
   'menu.register': '註冊',

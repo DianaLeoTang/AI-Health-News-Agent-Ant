@@ -18,6 +18,7 @@ export default {
   'menu.book.social-medicine': 'Social Medicine',
   'menu.book.statistics': 'Statistics',
   'menu.admin.upload':'Upload',
+  "menu.admin.download":'Download',
   'menu.hotspot': 'Public Health News',
   'menu.login': 'Login',
   'menu.register': 'Register',
