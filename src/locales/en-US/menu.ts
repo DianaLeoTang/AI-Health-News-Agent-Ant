@@ -19,6 +19,7 @@ export default {
   'menu.book.statistics': 'Statistics',
   'menu.admin.upload':'Upload',
   "menu.admin.download":'Download',
+  "menu.download":'Download',
   'menu.hotspot': 'Public Health News',
   'menu.login': 'Login',
   'menu.register': 'Register',

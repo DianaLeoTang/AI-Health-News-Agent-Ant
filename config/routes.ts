@@ -108,6 +108,12 @@ export default [
     icon: 'fire', // 可以选择适合的图标
     component: './SimpleHotspot',
   },
+  {
+    path: '/download',
+    name: 'download',
+    icon:'download',
+    component: './Download', // 对应 src/pages/Hotspot/index.tsx
+  },
   // {
   //   path: '/',
   //   component: '@/layouts/BasicLayout',
