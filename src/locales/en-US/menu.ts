@@ -12,6 +12,7 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.hotspot': 'PublicHealthHotspot',
+  'menu.admin.ai-news': 'AI News',
   'menu.book': '书籍',
   'menu.book.epidemiology': 'Epidemiology',
   'menu.book.public-health': 'Public Health',

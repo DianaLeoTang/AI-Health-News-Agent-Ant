@@ -120,3 +120,11 @@ export async function unloadFile(file: File){
     data: formData, // 使用data而不是body
   });
 }
+export async function getAINews(options?: { [key: string]: any }){
+  return request<Record<string, any>>(`${baseURL}/ai_news`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+}

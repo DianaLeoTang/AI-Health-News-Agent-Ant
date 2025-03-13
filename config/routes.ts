@@ -66,6 +66,11 @@ export default [
         name: 'download',
         component: './Download', // 对应 src/pages/Hotspot/index.tsx
       },
+      {
+        path: '/admin/ai-news',
+        name: 'ai-news',
+        component: './AINews', // 对应 src/pages/Hotspot/index.tsx
+      },
     ],
   },
   {

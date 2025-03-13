@@ -12,6 +12,7 @@ export default {
   'menu.admin': '管理页',
   'menu.admin.sub-page': '二级管理页',
   'menu.admin.hotspot': '公共卫生热点',
+  'menu.admin.ai-news': 'AI前沿',
   'menu.book': '书籍',
   'menu.book.epidemiology': '流行病学',
   'menu.book.public-health': '公共卫生',
