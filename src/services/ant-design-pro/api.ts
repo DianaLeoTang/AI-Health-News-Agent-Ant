@@ -9,7 +9,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 const baseURL = process.env.NODE_ENV === 'production'
-  ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
+  ? 'https://publichealthai.duckdns.org/.netlify/functions/api'
   : 'http://localhost:8888/.netlify/functions/api';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
