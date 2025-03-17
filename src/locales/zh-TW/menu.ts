@@ -12,6 +12,7 @@ export default {
   'menu.admin': '权限',
   'menu.admin.sub-page': '二级管理页',
   'menu.admin.hotspot': '公共衛生熱點',
+  'menu.admin.SPSS':'SPSS',
   'menu.book': '书籍',
   'menu.book.epidemiology': '流行病学',
   'menu.book.public-health': '公共卫生',
