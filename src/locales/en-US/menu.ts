@@ -14,7 +14,7 @@ export default {
   'menu.admin.hotspot': 'PublicHealthHotspot',
   'menu.admin.ai-news': 'AI News',
   'menu.admin.SPSS':'SPSS',
-  'menu.book': '书籍',
+  'menu.book':'book',
   'menu.book.epidemiology': 'Epidemiology',
   'menu.book.public-health': 'Public Health',
   'menu.book.social-medicine': 'Social Medicine',
