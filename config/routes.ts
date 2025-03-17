@@ -71,6 +71,11 @@ export default [
         name: 'ai-news',
         component: './AINews', // 对应 src/pages/Hotspot/index.tsx
       },
+      {
+        path: '/admin/spss',
+        name: 'SPSS',
+        component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
+      },
     ],
   },
   {
