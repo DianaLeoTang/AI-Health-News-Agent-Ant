@@ -6,8 +6,8 @@ import {
   BarChartOutlined,
   PieChartOutlined,
   LineChartOutlined,
-  ScatterPlotOutlined,
   FileTextOutlined,
+  DotChartOutlined,
   SettingOutlined,
   AreaChartOutlined,
   RadarChartOutlined,
@@ -150,7 +150,7 @@ const SPSSGuide: React.FC = () => {
     {
       key: 'scatter',
       title: '散点图',
-      icon: <ScatterPlotOutlined />,
+      icon: <DotChartOutlined />,
       description: '展示两个变量之间的相关关系',
       examples: [
         {
