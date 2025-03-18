@@ -3,7 +3,7 @@
  * @Date: 2025-03-05 13:11:30
  * @LastEditors: Diana Tang
  * @Description: some description
- * @FilePath: /AI-Health-News-Agent-Ant/src/pages/SimpleHotspot/index.tsx
+ * @FilePath: /AI-Health-News-Agent-Ant/src/pages/SimpleHotspot/index copy.tsx
  */
 import { FireTwoTone, SearchOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { getHotpot } from '@/services/ant-design-pro/api';
 import {processDataForDisplay} from '../../utils/processDataForDisplay'
-import { newsMock } from './mock';
+
 // type PaginationPosition = 'top' | 'bottom' | 'both';
 
 // type PaginationAlign = 'start' | 'center' | 'end';
@@ -52,14 +52,8 @@ const Hotspot: React.FC = () => {
       setLoading(false);
     }
   };
-  const fetchMock=()=>{
-    const defaultProcessed = processDataForDisplay(newsMock||[],{maxLinks: 30,});
-    setNews(defaultProcessed);
-    setLoading(false);
-  }
   useEffect(() => {
     // fetchNews();
-    fetchMock()
   }, []);
   return (
     <>
