@@ -3,7 +3,7 @@
  * @Date: 2025-03-05 13:11:30
  * @LastEditors: Diana Tang
  * @Description: some description
- * @FilePath: /AI-Health-News-Agent-Ant/src/pages/AINews/index.tsx
+ * @FilePath: /AI-Health-News-Agent-Ant/src/pages/AINews/index copy.tsx
  */
 import { FireTwoTone, SearchOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
@@ -26,8 +26,8 @@ const AINews: React.FC = () => {
   const [position, setPosition] = useState<PaginationPosition>('bottom');
   const [align, setAlign] = useState<PaginationAlign>('end');
   const [defaultPageSize] = useState(50);
-  const [news, setNews] = useState<NewsItem[]>(newsMock);
-  const [loading, setLoading] = useState(false);
+  const [news, setNews] = useState<NewsItem[]>();
+  const [loading, setLoading] = useState(true);
   const intl = useIntl();
 
   const fetchNews = async () => {
