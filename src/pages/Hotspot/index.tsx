@@ -27,7 +27,7 @@ const Hotspot: React.FC = () => {
   const [align, setAlign] = useState<PaginationAlign>('end');
   const [defaultPageSize] = useState(50);
   const [news, setNews] = useState<NewsItem[]>(newsMock);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const intl = useIntl();
 
   const fetchNews = async () => {
@@ -53,7 +53,7 @@ const Hotspot: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchNews();
+    // fetchNews();
   }, []);
   return (
     <>
