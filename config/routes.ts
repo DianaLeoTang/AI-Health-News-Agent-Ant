@@ -74,7 +74,8 @@ export default [
       {
         path: '/admin/spss',
         name: 'SPSS',
-        component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
+        // component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
+        component:'./SPSSOperationGuide'
       },
     ],
   },
