@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import * as d3 from 'd3';
 import { saveAs } from 'file-saver';
+import {Button,Select} from 'antd'
 import './index.css';
 
 interface MarkdownMindMapProps {
@@ -36,6 +37,8 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
   const [transform, setTransform] = useState<{ x: number; y: number; k: number }>({ x: 0, y: 0, k: 1 });
 // 创建一个引用来存储 zoom 行为
   const zoomBehaviorRef = useRef<any>(null);
+  // 添加一个下载状态，防止重复点击
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   // Parse markdown content into a hierarchical tree structure
   const parseMarkdownToTree = (markdownContent: string): MindMapNode => {
@@ -236,79 +239,190 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
 
   // Download the mind map
   const downloadMindMap = () => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || isDownloading) return;
 
-    // Create a clone of the SVG for download
-    const svgElement = svgRef.current.cloneNode(true) as SVGElement;
+    setIsDownloading(true);
 
-    // Get the g element with the mind map content
-    const gElement = svgElement.querySelector('.mindmap-container-g');
+    // 创建一个新的 SVG 元素，而不是克隆现有元素
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const svgElement = document.createElementNS(svgNamespace, "svg");
 
-    if (!gElement) {
-      console.error('Mind map content not found');
-      return;
-    }
+    // 准备下载的 SVG
+    const prepareDownloadSvg = async () => {
+      try {
+        // 解析markdown到树结构并获取适当的尺寸
+        const root = parseMarkdownToTree(markdown);
+        const hierarchy = d3.hierarchy(root);
+        const treeLayout = d3.tree<MindMapNode>()
+          .size([height - 100, width / 2 - 100])
+          .separation((a, b) => (a.parent === b.parent ? 1.5 : 2));
 
-    // Get the current transform and BBox
-    const bbox = (gElement as SVGGraphicsElement).getBBox();
+        const treeData = treeLayout(hierarchy);
 
-    // Add some padding
-    const padding = 50;
-    const width = bbox.width + padding * 2;
-    const height = bbox.height + padding * 2;
+        // 计算边界框
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
-    // Set the viewBox attribute to focus on the content
-    svgElement.setAttribute('viewBox', `${bbox.x - padding} ${bbox.y - padding} ${width} ${height}`);
-    svgElement.setAttribute('width', `${width}`);
-    svgElement.setAttribute('height', `${height}`);
+        treeData.descendants().forEach(node => {
+          const nodeWidth = getTextWidth(node.data.name) + 20; // 文本宽度加上一些填充
+          const nodeHeight = 30; // 估计节点高度
 
-    // Simplify the transform to prevent issues during export
-    // This retains the zoom level but centers the content
-    gElement.setAttribute('transform', `scale(${transform.k})`);
+          minX = Math.min(minX, node.y - (node.children ? nodeWidth : 0));
+          minY = Math.min(minY, node.x - nodeHeight/2);
+          maxX = Math.max(maxX, node.y + (node.children ? 0 : nodeWidth));
+          maxY = Math.max(maxY, node.x + nodeHeight/2);
+        });
 
-    // Convert to string
-    const svgData = new XMLSerializer().serializeToString(svgElement);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        // 添加填充
+        const padding = 50;
+        minX -= padding;
+        minY -= padding;
+        maxX += padding;
+        maxY += padding;
 
-    if (downloadFormat === 'svg') {
-      saveAs(svgBlob, 'mindmap.svg');
-      return;
-    }
+        const svgWidth = maxX - minX;
+        const svgHeight = maxY - minY;
 
-    // For PNG, we need to convert SVG to canvas
-    const canvas = document.createElement('canvas');
-    // Make canvas bigger for better quality
-    const scale = 2; // Higher quality export
-    canvas.width = width * scale;
-    canvas.height = height * scale;
-    const ctx = canvas.getContext('2d');
-    const DOMURL = window.URL || window.webkitURL || window;
+        // 设置SVG属性
+        svgElement.setAttribute("width", String(svgWidth));
+        svgElement.setAttribute("height", String(svgHeight));
+        svgElement.setAttribute("viewBox", `${minX} ${minY} ${svgWidth} ${svgHeight}`);
 
-    if (!ctx) {
-      console.error('Failed to get canvas context');
-      return;
-    }
+        // 创建一个白色背景
+        const background = document.createElementNS(svgNamespace, "rect");
+        background.setAttribute("x", String(minX));
+        background.setAttribute("y", String(minY));
+        background.setAttribute("width", String(svgWidth));
+        background.setAttribute("height", String(svgHeight));
+        background.setAttribute("fill", "white");
+        svgElement.appendChild(background);
 
-    // Set white background
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.scale(scale, scale);
+        // 创建主容器组
+        const g = document.createElementNS(svgNamespace, "g");
+        svgElement.appendChild(g);
 
-    const img = new Image();
-    const svgUrl = DOMURL.createObjectURL(svgBlob);
+        // 添加链接
+        treeData.links().forEach(link => {
+          const path = document.createElementNS(svgNamespace, "path");
+          path.setAttribute("d", `M${link.source.y},${link.source.x}
+                C${(link.source.y + link.target.y) / 2},${link.source.x}
+                 ${(link.source.y + link.target.y) / 2},${link.target.x}
+                 ${link.target.y},${link.target.x}`);
+          path.setAttribute("fill", "none");
+          path.setAttribute("stroke", "#555");
+          path.setAttribute("stroke-width", "1.5");
+          g.appendChild(path);
+        });
 
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0);
-      DOMURL.revokeObjectURL(svgUrl);
+        // 添加节点
+        treeData.descendants().forEach(node => {
+          const nodeGroup = document.createElementNS(svgNamespace, "g");
+          nodeGroup.setAttribute("transform", `translate(${node.y},${node.x})`);
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          saveAs(blob, 'mindmap.png');
+          // 添加节点圆圈
+          const circle = document.createElementNS(svgNamespace, "circle");
+          circle.setAttribute("r", "5");
+          circle.setAttribute("fill", node.depth === 0 ? "#ff7700" : node.children ? "#555" : "#999");
+          nodeGroup.appendChild(circle);
+
+          // 添加标签背景
+          const textWidth = getTextWidth(node.data.name);
+          const rect = document.createElementNS(svgNamespace, "rect");
+          rect.setAttribute("x", node.children ? String(-8 - textWidth) : "8");
+          rect.setAttribute("y", "-10");
+          rect.setAttribute("width", String(textWidth + 10));
+          rect.setAttribute("height", "20");
+          rect.setAttribute("rx", "3");
+          rect.setAttribute("ry", "3");
+          rect.setAttribute("fill", "white");
+          rect.setAttribute("fill-opacity", "0.8");
+          nodeGroup.appendChild(rect);
+
+          // 添加文本标签
+          const text = document.createElementNS(svgNamespace, "text");
+          text.setAttribute("dy", ".31em");
+          text.setAttribute("x", node.children ? "-8" : "8");
+          text.setAttribute("text-anchor", node.children ? "end" : "start");
+          text.setAttribute("font-size", "12px");
+          text.setAttribute("font-family", "Arial, sans-serif");
+          text.textContent = node.data.name;
+          nodeGroup.appendChild(text);
+
+          g.appendChild(nodeGroup);
+        });
+
+        // 转换为字符串
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svgElement);
+
+        if (downloadFormat === 'svg') {
+          const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+          saveAs(svgBlob, 'mindmap.svg');
+          setIsDownloading(false);
+          return;
         }
-      }, 'image/png', 0.95); // Higher quality PNG
+
+        // PNG转换
+        return new Promise<void>((resolve, reject) => {
+          const canvas = document.createElement('canvas');
+          const scale = 2; // 更高质量
+          canvas.width = svgWidth * scale;
+          canvas.height = svgHeight * scale;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('无法获取Canvas上下文'));
+            return;
+          }
+
+          // 设置白色背景
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.scale(scale, scale);
+
+          // 从SVG字符串创建图片对象
+          const img = new Image();
+
+          // 重要：等待图片加载完成
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+
+            // 转换为Blob并下载
+            canvas.toBlob((blob) => {
+              if (blob) {
+                saveAs(blob, 'mindmap.png');
+                resolve();
+              } else {
+                reject(new Error('无法创建PNG Blob'));
+              }
+              setIsDownloading(false);
+            }, 'image/png', 0.95);
+          };
+
+          img.onerror = (err) => {
+            console.error('图片加载错误', err);
+            reject(err);
+            setIsDownloading(false);
+          };
+
+          // 使用DataURL，而不是Blob URL
+          const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+          const reader = new FileReader();
+          reader.onload = () => {
+            img.src = reader.result as string;
+          };
+          reader.onerror = (err) => {
+            reject(err);
+            setIsDownloading(false);
+          };
+          reader.readAsDataURL(svgBlob);
+        });
+      } catch (error) {
+        console.error('下载过程中出错:', error);
+        setIsDownloading(false);
+      }
     };
 
-    img.src = svgUrl;
+    prepareDownloadSvg();
   };
 
   // Update mind map when markdown changes
@@ -405,33 +519,37 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
       </div>
 
       <div className="mindmap-container">
-        <h3>Mind Map Preview</h3>
+        <h3>思维导图预览</h3>
         <div className="controls-container">
           <div className="download-controls">
-            <select
+            <Select
+              defaultValue="lucy"
               value={downloadFormat}
               onChange={(e) => setDownloadFormat(e.target.value)}
+              options={[
+                { value: 'PNG', label: 'PNG' },
+                { value: 'SVG', label: 'SVG' }
+              ]}
             >
-              <option value="png">PNG</option>
-              <option value="svg">SVG</option>
-            </select>
-            <button onClick={downloadMindMap}>
-              Download Mind Map
-            </button>
-          </div>
-          <div className="zoom-controls">
-            <button onClick={zoomOut} title="Zoom Out">
+            </Select>
+            <Button type="primary" onClick={downloadMindMap}>
+              下载思维导图
+            </Button>
+            <Button onClick={zoomOut} title="Zoom Out">
               −
-            </button>
-            <span className="zoom-level">
+            </Button>
+            <span type="text" className="zoom-level">
               {Math.round(zoomLevel * 100)}%
             </span>
-            <button onClick={zoomIn} title="Zoom In">
+            <Button onClick={zoomIn} title="Zoom In" className='zoom-in'>
               +
-            </button>
-            <button onClick={resetZoom} title="Reset Zoom">
-              Reset
-            </button>
+            </Button>
+            <Button type="primary" onClick={resetZoom} title="Reset Zoom">
+              重置
+            </Button>
+          </div>
+          <div className="zoom-instructions">
+            <middle>Tip: Use mouse wheel to zoom, drag to pan</middle>
           </div>
         </div>
         <div className="mindmap-svg-container">
@@ -441,9 +559,7 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
             height={height}
             className="mindmap-svg"
           />
-          <div className="zoom-instructions">
-            <small>Tip: Use mouse wheel to zoom, drag to pan</small>
-          </div>
+
         </div>
       </div>
     </div>
