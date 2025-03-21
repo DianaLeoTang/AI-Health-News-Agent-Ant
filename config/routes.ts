@@ -77,6 +77,12 @@ export default [
         // component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
         component:'./SPSSOperationGuide'
       },
+      {
+        path: '/admin/mindMap',
+        name: 'mindMap',
+        // component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
+        component:'./MarkdownMindMap'
+      },
     ],
   },
   {
