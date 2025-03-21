@@ -34,6 +34,8 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
   const [downloadFormat, setDownloadFormat] = useState<string>('png');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [transform, setTransform] = useState<{ x: number; y: number; k: number }>({ x: 0, y: 0, k: 1 });
+// 创建一个引用来存储 zoom 行为
+  const zoomBehaviorRef = useRef<any>(null);
 
   // Parse markdown content into a hierarchical tree structure
   const parseMarkdownToTree = (markdownContent: string): MindMapNode => {
@@ -117,12 +119,18 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
     // Create zoom behavior
     const zoom = d3.zoom()
       .scaleExtent([minZoom, maxZoom])
+      .filter(event => {
+        // 允许滚轮事件、指针事件，但禁用双击缩放
+        return !event.ctrlKey && !event.button && event.type !== 'dblclick';
+      })
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
         setTransform({ x: event.transform.x, y: event.transform.y, k: event.transform.k });
         setZoomLevel(event.transform.k);
       });
 
+      // Store zoom behavior for button usage
+      zoomBehaviorRef.current = zoom;
     // Apply zoom behavior to svg
     svg.call(zoom as any);
 
@@ -322,50 +330,58 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
 
   // Reset zoom level
   const resetZoom = () => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
 
     const svg = d3.select(svgRef.current);
-    const zoom = d3.zoom().scaleExtent([minZoom, maxZoom]);
 
-    // Reset to initial transform
+    // Get the root node for centering purposes
+    const root = parseMarkdownToTree(markdown);
+    const hierarchy = d3.hierarchy(root);
+    const treeLayout = d3.tree<MindMapNode>().size([height - 100, width / 2 - 100]);
+    const treeData = treeLayout(hierarchy);
+    const rootNode = treeData.descendants()[0];
+
+    const centerX = width / 4 - rootNode.y;
+    const centerY = height / 2 - rootNode.x;
+
+    // Apply reset transform with animation using the stored zoom behavior
     svg.transition().duration(750).call(
-      (zoom as any).transform,
-      d3.zoomIdentity.translate(width / 4, height / 2).scale(1)
+      zoomBehaviorRef.current.transform,
+      d3.zoomIdentity.translate(centerX, centerY).scale(1)
     );
 
-    setTransform({ x: width / 4, y: height / 2, k: 1 });
+    // Update our state
+    setTransform({ x: centerX, y: centerY, k: 1 });
     setZoomLevel(1);
+
   };
 
   // Zoom in button handler
   const zoomIn = () => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
 
     const svg = d3.select(svgRef.current);
-    const zoom = d3.zoom().scaleExtent([minZoom, maxZoom]);
 
+    // 计算新的缩放级别
     const newZoom = Math.min(transform.k * 1.2, maxZoom);
 
+    // 使用与滚轮事件相同的 zoom 行为
     svg.transition().duration(300).call(
-      (zoom as any).transform,
+      zoomBehaviorRef.current.transform,
       d3.zoomIdentity.translate(transform.x, transform.y).scale(newZoom)
     );
-
-    setTransform({ ...transform, k: newZoom });
-    setZoomLevel(newZoom);
   };
 
   // Zoom out button handler
   const zoomOut = () => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
 
     const svg = d3.select(svgRef.current);
-    const zoom = d3.zoom().scaleExtent([minZoom, maxZoom]);
 
     const newZoom = Math.max(transform.k / 1.2, minZoom);
 
     svg.transition().duration(300).call(
-      (zoom as any).transform,
+      zoomBehaviorRef.current.transform,
       d3.zoomIdentity.translate(transform.x, transform.y).scale(newZoom)
     );
 
