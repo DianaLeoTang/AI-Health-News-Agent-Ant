@@ -506,7 +506,7 @@ const MarkdownMindMap: React.FC<MarkdownMindMapProps> = ({
   return (
     <div className="markdown-mindmap-container">
       <div className="markdown-editor">
-        <h3>Markdown Editor</h3>
+        <h3>Markdown 编辑</h3>
         <textarea
           value={markdown}
           onChange={(e) => setMarkdown(e.target.value)}
