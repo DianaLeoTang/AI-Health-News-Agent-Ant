@@ -53,7 +53,7 @@ const Hotspot: React.FC = () => {
     }
   };
   useEffect(() => {
-    // fetchNews();
+    fetchNews();
   }, []);
   return (
     <>
