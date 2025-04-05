@@ -53,7 +53,7 @@ const AINews: React.FC = () => {
     }
   };
   useEffect(() => {
-    // fetchNews();
+    fetchNews();
   }, []);
   return (
     <>
