@@ -5,7 +5,8 @@
  * @Description: some description
  * @FilePath: /AI-Health-News-Agent-Ant/src/components/RightContent/AiDrawer.tsx
  */
-import { Button, Drawer, Input } from 'antd';
+import { AIChatStream } from '@/services/ant-design-pro/api';
+import { Button, Drawer, Input, message } from 'antd';
 import { useState } from 'react';
 
 interface AiDrawerProps {
@@ -13,34 +14,39 @@ interface AiDrawerProps {
   onClose: () => void;
 }
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+// interface Message {
+//   role: 'user' | 'assistant';
+//   content: string;
+// }
 
-interface ApiResponse {
-  choices: {
-    message: {
-      content: string;
-    };
-  }[];
-}
+// interface ApiResponse {
+//   choices: {
+//     message: {
+//       content: string;
+//     };
+//   }[];
+// }
 
 export default function AiDrawer({ open, onClose }: AiDrawerProps) {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
 
-  const handleAsk = async () => {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: question }] as Message[],
-      }),
-    });
+  // const handleAsk = async () => {
+  //   const res = await AIChat();
 
-    const data: ApiResponse = await res.json();
-    setAnswer(data.choices?.[0]?.message?.content || 'AI无回应');
+  //   const data: ApiResponse = await res.json();
+  //   setAnswer(data.choices?.[0]?.message?.content || 'AI无回应');
+  // };
+
+  const handleAsk = async () => {
+    setAnswer(''); // 清空回答
+    try {
+      await AIChatStream([{ role: 'user', content: question }], (delta: string) => {
+        setAnswer((prev) => prev + delta); // 实时更新
+      });
+    } catch (e) {
+      message.error('对话失败，请稍后再试');
+    }
   };
 
   return (

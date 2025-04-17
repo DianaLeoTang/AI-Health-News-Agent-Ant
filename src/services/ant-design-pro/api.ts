@@ -8,9 +8,10 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
-const baseURL = process.env.NODE_ENV === 'production'
-  ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
-  : 'http://localhost:8888/.netlify/functions/api';
+const baseURL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
+    : 'http://localhost:8888/.netlify/functions/api';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
@@ -73,10 +74,10 @@ export async function rule(
 export async function updateRule(options?: { [key: string]: any }) {
   return request<API.RuleListItem>(`${baseURL}/rule`, {
     method: 'POST',
-    data:{
+    data: {
       method: 'update',
       ...(options || {}),
-    }
+    },
   });
 }
 
@@ -84,10 +85,10 @@ export async function updateRule(options?: { [key: string]: any }) {
 export async function addRule(options?: { [key: string]: any }) {
   return request<API.RuleListItem>(`${baseURL}/rule`, {
     method: 'POST',
-    data:{
+    data: {
       method: 'post',
       ...(options || {}),
-    }
+    },
   });
 }
 
@@ -95,23 +96,23 @@ export async function addRule(options?: { [key: string]: any }) {
 export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>(`${baseURL}/rule`, {
     method: 'POST',
-    data:{
+    data: {
       method: 'delete',
       ...(options || {}),
-    }
+    },
   });
 }
 // 热点新闻接口
-export async function getHotpot(options?: { [key: string]: any }){
+export async function getHotpot(options?: { [key: string]: any }) {
   return request<Record<string, any>>(`${baseURL}/news`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-    }
+    },
   });
 }
 // 热点新闻接口
-export async function unloadFile(file: File){
+export async function unloadFile(file: File) {
   const formData = new FormData();
   formData.append('file', file);
   return request<Record<string, any>>(`${baseURL}/novels/upload`, {
@@ -120,11 +121,64 @@ export async function unloadFile(file: File){
     data: formData, // 使用data而不是body
   });
 }
-export async function getAINews(options?: { [key: string]: any }){
+export async function getAINews(options?: { [key: string]: any }) {
   return request<Record<string, any>>(`${baseURL}/ai_news`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-    }
+    },
   });
+}
+export async function AIChat(messages: Message[]) {
+  return request<ApiResponse>(`${baseURL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: {
+      messages,
+    },
+  });
+}
+
+export async function AIChatStream(messages: Message[], onDelta: (token: string) => void) {
+  const res = await fetch(`${baseURL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ messages }),
+  });
+
+  if (!res.body) {
+    throw new Error('响应体为空，无法读取流');
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder('utf-8');
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    const lines = buffer.split('\n\n');
+
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+
+      if (line.startsWith('data:')) {
+        const jsonStr = line.replace('data: ', '');
+        const parsed = JSON.parse(jsonStr);
+
+        if (parsed.content) {
+          onDelta(parsed.content); // ✅ 增量推送
+        }
+      }
+    }
+
+    buffer = lines[lines.length - 1];
+  }
 }
