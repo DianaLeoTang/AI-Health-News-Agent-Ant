@@ -1,6 +1,16 @@
+/*
+ * @Author: Diana Tang
+ * @Date: 2025-04-17 17:55:54
+ * @LastEditors: Diana Tang
+ * @Description: some description
+ * @FilePath: /AI-Health-News-Agent-Ant/src/components/RightContent/index.tsx
+ */
+
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { SelectLang as UmiSelectLang } from '@umijs/max';
-import React from 'react';
+import { useState } from 'react';
+import AiDrawer from './AiDrawer';
+import LogoButton from './LogoButton';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -27,5 +37,16 @@ export const Question = () => {
     >
       <QuestionCircleOutlined />
     </div>
+  );
+};
+
+export const AiAssistant = () => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  return (
+    <>
+      <LogoButton onClick={() => setDrawerVisible(true)} />
+      <AiDrawer open={drawerVisible} onClose={() => setDrawerVisible(false)} />
+    </>
   );
 };
