@@ -11,7 +11,7 @@ import { request } from '@umijs/max';
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
-    : 'http://localhost:8888/.netlify/functions/api';
+    : 'http://localhost:4000';
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
@@ -141,18 +141,20 @@ export async function AIChat(messages: Message[]) {
   });
 }
 
-export async function AIChatStream(messages: Message[], onDelta: (token: string) => void) {
+export async function AIChatStream(
+  prompt: string,
+  sessionId: string,
+  onDelta: (token: string) => void,
+) {
   const res = await fetch(`${baseURL}/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ prompt, sessionId }),
   });
 
-  if (!res.body) {
-    throw new Error('响应体为空，无法读取流');
-  }
+  if (!res.body) throw new Error('响应体为空，无法读取流');
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder('utf-8');
@@ -164,21 +166,25 @@ export async function AIChatStream(messages: Message[], onDelta: (token: string)
 
     buffer += decoder.decode(value, { stream: true });
 
-    const lines = buffer.split('\n\n');
+    const chunks = buffer.split('\n\n');
+    buffer = chunks.pop() || ''; // 保留最后未完整段
 
-    for (let i = 0; i < lines.length - 1; i++) {
-      const line = lines[i].trim();
-
-      if (line.startsWith('data:')) {
-        const jsonStr = line.replace('data: ', '');
-        const parsed = JSON.parse(jsonStr);
-
-        if (parsed.content) {
-          onDelta(parsed.content); // ✅ 增量推送
+    for (const chunk of chunks) {
+      const lines = chunk.trim().split('\n');
+      const dataLine = lines.find((l) => l.startsWith('data:'));
+      console.log(dataLine, 'dataLine');
+      if (dataLine) {
+        try {
+          const jsonStr = dataLine.replace(/^data:\s*/, '');
+          const parsed = JSON.parse(jsonStr);
+          const text = parsed?.output?.text;
+          if (text) {
+            onDelta(text);
+          }
+        } catch (e) {
+          console.warn('⚠️ 前端无法解析 chunk:', dataLine);
         }
       }
     }
-
-    buffer = lines[lines.length - 1];
   }
 }

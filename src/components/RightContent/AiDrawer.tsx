@@ -41,7 +41,7 @@ export default function AiDrawer({ open, onClose }: AiDrawerProps) {
   const handleAsk = async () => {
     setAnswer(''); // 清空回答
     try {
-      await AIChatStream([{ role: 'user', content: question }], (delta: string) => {
+      await AIChatStream(question, 'user', (delta: string) => {
         setAnswer((prev) => prev + delta); // 实时更新
       });
     } catch (e) {
