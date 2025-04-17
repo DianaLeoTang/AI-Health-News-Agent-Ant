@@ -16,10 +16,12 @@ export default function LogoButton({ onClick }: LogoButtonProps) {
   return (
     <Button
       type="primary"
-      shape="circle"
+      // shape="circle"
       icon={<OpenAIOutlined size={20} />}
       className="ai-assistant-button"
       onClick={onClick}
-    ></Button>
+    >
+      AI助手
+    </Button>
   );
 }
