@@ -7,7 +7,7 @@
  */
 import { AIChatStream } from '@/services/ant-design-pro/api';
 import { Button, Drawer, Input, message, Typography } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 const { Title, Paragraph } = Typography;
@@ -20,8 +20,16 @@ interface AiDrawerProps {
 export default function AiDrawer({ open, onClose }: AiDrawerProps) {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
+  const [loading, setLoading] = useState(false);
+  const lastClickRef = useRef<number>(0);
 
   const handleAsk = async () => {
+    const now = Date.now();
+    // 1. 节流控制：两次点击间隔必须 >= 1.5 秒
+    if (now - lastClickRef.current < 1500) return;
+
+    lastClickRef.current = now;
+    setLoading(true);
     setAnswer('');
     try {
       await AIChatStream(question, 'user', (delta: string) => {
@@ -29,6 +37,8 @@ export default function AiDrawer({ open, onClose }: AiDrawerProps) {
       });
     } catch (e) {
       message.error('对话失败，请稍后再试');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,8 +51,13 @@ export default function AiDrawer({ open, onClose }: AiDrawerProps) {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
-        <Button type="primary" onClick={handleAsk}>
-          提问
+        <Button
+          type="primary"
+          onClick={handleAsk}
+          loading={loading}
+          disabled={loading || !question.trim()}
+        >
+          {loading ? '提问中...' : '提问'}
         </Button>
 
         {/* Markdown 渲染区 */}
