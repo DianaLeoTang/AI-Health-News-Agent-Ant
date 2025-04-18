@@ -6,7 +6,8 @@
  * @FilePath: /AI-Health-News-Agent-Ant/src/components/RightContent/AiDrawer.tsx
  */
 import { AIChatStream } from '@/services/ant-design-pro/api';
-import { Button, Drawer, Input, message, Typography } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+import { Button, Drawer, Input, message, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
@@ -59,7 +60,18 @@ export default function AiDrawer({ open, onClose }: AiDrawerProps) {
         >
           {loading ? '提问中...' : '提问'}
         </Button>
-
+        {/* 复制按钮 */}
+        {answer && (
+          <Tooltip title="复制回答内容">
+            <CopyOutlined
+              onClick={() => {
+                navigator.clipboard.writeText(answer);
+                message.success('已复制回答内容');
+              }}
+              className="absolute right-4 top-4 text-gray-400 hover:text-blue-600 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            />
+          </Tooltip>
+        )}
         {/* Markdown 渲染区 */}
         <div className="bg-gray-100 p-4 rounded-md max-h-[60vh] overflow-y-auto">
           <ReactMarkdown
