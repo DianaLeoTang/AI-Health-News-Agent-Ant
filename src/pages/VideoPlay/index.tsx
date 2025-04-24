@@ -1,5 +1,4 @@
 import {
-  FullscreenOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   SoundOutlined,
@@ -9,39 +8,49 @@ import {
 import { Button, Card, Slider, Space, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
-const VideoPlayer = ({
-  videoSrc = 'https://www.youtube.com/watch?v=xGYsEqe9Vl0&list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O&index=4',
-  onTimeUpdate,
-  onReady,
-}) => {
-  const videoRef = useRef(null);
+// 导入音频文件
+import audioFile from '@/assets/videos/01-第1节_表达者红利时代_人人都可以成为超级表达者.wav';
+
+const VideoPlayer = ({ videoSrc = audioFile, onTimeUpdate, onReady }) => {
+  const mediaRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(100);
-  const [isYouTube, setIsYouTube] = useState(false);
-  const [youTubeId, setYouTubeId] = useState('');
+  const [isVideo, setIsVideo] = useState(true);
 
   useEffect(() => {
-    // 检查是否是 YouTube URL
-    if (videoSrc.includes('youtube.com') || videoSrc.includes('youtu.be')) {
-      setIsYouTube(true);
-      // 提取 YouTube 视频 ID
-      const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-      const match = videoSrc.match(regExp);
-      if (match && match[7].length === 11) {
-        setYouTubeId(match[7]);
-      }
+    // 检查文件类型
+    if (videoSrc) {
+      // 创建一个临时的 video 元素来检测文件类型
+      const tempVideo = document.createElement('video');
+      tempVideo.src = videoSrc;
+
+      // 监听 loadedmetadata 事件来检测文件类型
+      tempVideo.addEventListener('loadedmetadata', () => {
+        // 如果视频有视频轨道，则认为是视频文件
+        const isVideoFile = tempVideo.videoWidth > 0 || tempVideo.videoHeight > 0;
+        setIsVideo(isVideoFile);
+      });
+
+      // 如果加载失败，可能是音频文件
+      tempVideo.addEventListener('error', () => {
+        setIsVideo(false);
+      });
+
+      return () => {
+        tempVideo.remove();
+      };
     }
   }, [videoSrc]);
 
   // 播放/暂停控制
   const togglePlay = () => {
-    if (videoRef.current) {
+    if (mediaRef.current) {
       if (playing) {
-        videoRef.current.pause();
+        mediaRef.current.pause();
       } else {
-        videoRef.current.play();
+        mediaRef.current.play();
       }
       setPlaying(!playing);
     }
@@ -49,25 +58,25 @@ const VideoPlayer = ({
 
   // 设置时间
   const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime);
+    if (mediaRef.current) {
+      setCurrentTime(mediaRef.current.currentTime);
       if (onTimeUpdate) {
-        onTimeUpdate(videoRef.current.currentTime);
+        onTimeUpdate(mediaRef.current.currentTime);
       }
     }
   };
 
   // 设置时长
   const handleDurationChange = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration);
+    if (mediaRef.current) {
+      setDuration(mediaRef.current.duration);
     }
   };
 
   // 跳转到指定时间
   const seekTo = (time) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
+    if (mediaRef.current) {
+      mediaRef.current.currentTime = time;
       setCurrentTime(time);
     }
   };
@@ -79,31 +88,22 @@ const VideoPlayer = ({
 
   // 音量控制
   const handleVolumeChange = (value) => {
-    if (videoRef.current) {
-      videoRef.current.volume = value / 100;
+    if (mediaRef.current) {
+      mediaRef.current.volume = value / 100;
       setVolume(value);
     }
   };
 
   // 快进/快退
   const handleForward = () => {
-    if (videoRef.current) {
+    if (mediaRef.current) {
       seekTo(Math.min(currentTime + 10, duration));
     }
   };
 
   const handleBackward = () => {
-    if (videoRef.current) {
+    if (mediaRef.current) {
       seekTo(Math.max(currentTime - 10, 0));
-    }
-  };
-
-  // 全屏
-  const handleFullscreen = () => {
-    if (videoRef.current) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      }
     }
   };
 
@@ -115,88 +115,83 @@ const VideoPlayer = ({
   };
 
   useEffect(() => {
-    if (videoRef.current && onReady) {
-      videoRef.current.addEventListener('loadeddata', onReady);
+    if (mediaRef.current && onReady) {
+      mediaRef.current.addEventListener('loadeddata', onReady);
       return () => {
-        videoRef.current.removeEventListener('loadeddata', onReady);
+        mediaRef.current.removeEventListener('loadeddata', onReady);
       };
     }
   }, [onReady]);
 
   return (
-    <Card title="视频播放器" bordered={false} style={{ height: '100%' }}>
+    <Card title={isVideo ? '视频播放器' : '音频播放器'} bordered={false} style={{ height: '100%' }}>
       <div style={{ position: 'relative' }}>
-        {isYouTube ? (
-          <iframe
-            width="100%"
-            height="400"
-            src={`https://www.youtube.com/embed/${youTubeId}`}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        ) : (
+        {isVideo ? (
           <video
-            ref={videoRef}
+            ref={mediaRef}
             src={videoSrc}
             style={{ width: '100%', borderRadius: '4px' }}
             onTimeUpdate={handleTimeUpdate}
             onDurationChange={handleDurationChange}
             onEnded={() => setPlaying(false)}
+            controls={false}
+          />
+        ) : (
+          <audio
+            ref={mediaRef}
+            src={videoSrc}
+            style={{ width: '100%', borderRadius: '4px' }}
+            onTimeUpdate={handleTimeUpdate}
+            onDurationChange={handleDurationChange}
+            onEnded={() => setPlaying(false)}
+            controls={false}
           />
         )}
 
-        {!isYouTube && (
-          <div style={{ marginTop: 16 }}>
-            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-              <span>
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
+        <div style={{ marginTop: 16 }}>
+          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+            <span>
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
 
-              <Space>
-                <Tooltip title="音量">
-                  <SoundOutlined />
-                  <Slider
-                    style={{ width: 100, marginLeft: 8 }}
-                    value={volume}
-                    onChange={handleVolumeChange}
-                  />
-                </Tooltip>
-
-                <Tooltip title="全屏">
-                  <Button icon={<FullscreenOutlined />} onClick={handleFullscreen} size="small" />
-                </Tooltip>
-              </Space>
+            <Space>
+              <Tooltip title="音量">
+                <SoundOutlined />
+                <Slider
+                  style={{ width: 100, marginLeft: 8 }}
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+              </Tooltip>
             </Space>
+          </Space>
 
-            <Slider
-              value={currentTime}
-              max={duration}
-              onChange={handleSliderChange}
-              style={{ marginBottom: 16, marginTop: 8 }}
-            />
+          <Slider
+            value={currentTime}
+            max={duration}
+            onChange={handleSliderChange}
+            style={{ marginBottom: 16, marginTop: 8 }}
+          />
 
-            <Space style={{ width: '100%', justifyContent: 'center' }}>
-              <Button icon={<StepBackwardOutlined />} onClick={handleBackward}>
-                后退10秒
-              </Button>
+          <Space style={{ width: '100%', justifyContent: 'center' }}>
+            <Button icon={<StepBackwardOutlined />} onClick={handleBackward}>
+              后退10秒
+            </Button>
 
-              <Button
-                type="primary"
-                icon={playing ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-                onClick={togglePlay}
-                size="large"
-              >
-                {playing ? '暂停' : '播放'}
-              </Button>
+            <Button
+              type="primary"
+              icon={playing ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+              onClick={togglePlay}
+              size="large"
+            >
+              {playing ? '暂停' : '播放'}
+            </Button>
 
-              <Button icon={<StepForwardOutlined />} onClick={handleForward}>
-                前进10秒
-              </Button>
-            </Space>
-          </div>
-        )}
+            <Button icon={<StepForwardOutlined />} onClick={handleForward}>
+              前进10秒
+            </Button>
+          </Space>
+        </div>
       </div>
     </Card>
   );
