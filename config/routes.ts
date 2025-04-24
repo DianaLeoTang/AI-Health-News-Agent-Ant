@@ -1,7 +1,7 @@
 ﻿/*
  * @Author: Diana Tang
  * @Date: 2025-03-05 12:29:45
- * @LastEditors: Diana Tang
+ * @LastEditors: Please set LastEditors
  * @Description: some description
  * @FilePath: /AI-Health-News-Agent-Ant/config/routes.ts
  */
@@ -49,7 +49,6 @@ export default [
         path: '/admin/sub-page',
         name: 'sub-page',
         component: './Admin',
-
       },
       {
         path: '/admin/Hotspot',
@@ -75,13 +74,13 @@ export default [
         path: '/admin/spss',
         name: 'SPSS',
         // component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
-        component:'./SPSSOperationGuide'
+        component: './SPSSOperationGuide',
       },
       {
         path: '/admin/mindMap',
         name: 'mindMap',
         // component: './SPSSGuide', // 对应 src/pages/Hotspot/index.tsx
-        component:'./MarkdownMindMap'
+        component: './MarkdownMindMap',
       },
     ],
   },
@@ -128,8 +127,14 @@ export default [
   {
     path: '/download',
     name: 'download',
-    icon:'download',
+    icon: 'download',
     component: './Download', // 对应 src/pages/Hotspot/index.tsx
+  },
+  {
+    path: '/entryExam',
+    name: 'entryExam',
+    icon: 'download',
+    component: './VideoPlay', // 对应 src/pages/Hotspot/index.tsx
   },
   // {
   //   path: '/',
