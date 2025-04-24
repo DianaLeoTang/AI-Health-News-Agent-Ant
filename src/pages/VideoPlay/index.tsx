@@ -8,49 +8,83 @@ import {
 import { Button, Card, Slider, Space, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
-// 导入音频文件
-import audioFile from '@/assets/videos/01-第1节_表达者红利时代_人人都可以成为超级表达者.wav';
+// 导入视频文件
+import videoFile from '@/assets/videos/01-第1节_表达者红利时代_人人都可以成为超级表达者.mp4';
 
-const VideoPlayer = ({ videoSrc = audioFile, onTimeUpdate, onReady }) => {
-  const mediaRef = useRef(null);
+// 文件类型检测函数
+const detectFileType = async (fileUrl) => {
+  try {
+    const response = await fetch(fileUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer.slice(0, 4)); // 读取文件头部
+
+    // 检查文件头部特征
+    const header = Array.from(uint8Array)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .toUpperCase();
+
+    // 常见视频格式的头部特征
+    const videoSignatures = {
+      '00000020': 'video/mp4', // MP4
+      '1A45DFA3': 'video/webm', // WebM
+      '000001BA': 'video/mpeg', // MPEG
+      '000001B3': 'video/mpeg', // MPEG
+      '464C5601': 'video/flv', // FLV
+      '3026B275': 'video/wmv', // WMV
+      '52494646': 'video/avi', // AVI
+    };
+
+    return videoSignatures[header] || 'application/octet-stream';
+  } catch (error) {
+    console.error('Error detecting file type:', error);
+    return 'application/octet-stream';
+  }
+};
+
+const VideoPlayer = ({ videoSrc = videoFile, onTimeUpdate, onReady }) => {
+  const videoRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(100);
-  const [isVideo, setIsVideo] = useState(true);
+  const [, setMimeType] = useState('');
 
   useEffect(() => {
-    // 检查文件类型
-    if (videoSrc) {
-      // 创建一个临时的 video 元素来检测文件类型
-      const tempVideo = document.createElement('video');
-      tempVideo.src = videoSrc;
+    const initPlayer = async () => {
+      try {
+        // 检测文件类型
+        const detectedType = await detectFileType(videoSrc);
+        setMimeType(detectedType);
 
-      // 监听 loadedmetadata 事件来检测文件类型
-      tempVideo.addEventListener('loadedmetadata', () => {
-        // 如果视频有视频轨道，则认为是视频文件
-        const isVideoFile = tempVideo.videoWidth > 0 || tempVideo.videoHeight > 0;
-        setIsVideo(isVideoFile);
-      });
+        // 设置视频源
+        videoRef.current.src = videoSrc;
+        videoRef.current.type = detectedType;
 
-      // 如果加载失败，可能是音频文件
-      tempVideo.addEventListener('error', () => {
-        setIsVideo(false);
-      });
+        if (onReady) {
+          videoRef.current.addEventListener('loadeddata', onReady);
+        }
+      } catch (error) {
+        console.error('Error initializing player:', error);
+      }
+    };
 
-      return () => {
-        tempVideo.remove();
-      };
-    }
-  }, [videoSrc]);
+    initPlayer();
+
+    return () => {
+      if (videoRef.current && onReady) {
+        videoRef.current.removeEventListener('loadeddata', onReady);
+      }
+    };
+  }, [videoSrc, onReady]);
 
   // 播放/暂停控制
   const togglePlay = () => {
-    if (mediaRef.current) {
+    if (videoRef.current) {
       if (playing) {
-        mediaRef.current.pause();
+        videoRef.current.pause();
       } else {
-        mediaRef.current.play();
+        videoRef.current.play();
       }
       setPlaying(!playing);
     }
@@ -58,25 +92,25 @@ const VideoPlayer = ({ videoSrc = audioFile, onTimeUpdate, onReady }) => {
 
   // 设置时间
   const handleTimeUpdate = () => {
-    if (mediaRef.current) {
-      setCurrentTime(mediaRef.current.currentTime);
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
       if (onTimeUpdate) {
-        onTimeUpdate(mediaRef.current.currentTime);
+        onTimeUpdate(videoRef.current.currentTime);
       }
     }
   };
 
   // 设置时长
   const handleDurationChange = () => {
-    if (mediaRef.current) {
-      setDuration(mediaRef.current.duration);
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
     }
   };
 
   // 跳转到指定时间
   const seekTo = (time) => {
-    if (mediaRef.current) {
-      mediaRef.current.currentTime = time;
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
       setCurrentTime(time);
     }
   };
@@ -88,21 +122,21 @@ const VideoPlayer = ({ videoSrc = audioFile, onTimeUpdate, onReady }) => {
 
   // 音量控制
   const handleVolumeChange = (value) => {
-    if (mediaRef.current) {
-      mediaRef.current.volume = value / 100;
+    if (videoRef.current) {
+      videoRef.current.volume = value / 100;
       setVolume(value);
     }
   };
 
   // 快进/快退
   const handleForward = () => {
-    if (mediaRef.current) {
+    if (videoRef.current) {
       seekTo(Math.min(currentTime + 10, duration));
     }
   };
 
   const handleBackward = () => {
-    if (mediaRef.current) {
+    if (videoRef.current) {
       seekTo(Math.max(currentTime - 10, 0));
     }
   };
@@ -114,39 +148,17 @@ const VideoPlayer = ({ videoSrc = audioFile, onTimeUpdate, onReady }) => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  useEffect(() => {
-    if (mediaRef.current && onReady) {
-      mediaRef.current.addEventListener('loadeddata', onReady);
-      return () => {
-        mediaRef.current.removeEventListener('loadeddata', onReady);
-      };
-    }
-  }, [onReady]);
-
   return (
-    <Card title={isVideo ? '视频播放器' : '音频播放器'} bordered={false} style={{ height: '100%' }}>
+    <Card title="视频播放器" bordered={false} style={{ height: '100%' }}>
       <div style={{ position: 'relative' }}>
-        {isVideo ? (
-          <video
-            ref={mediaRef}
-            src={videoSrc}
-            style={{ width: '100%', borderRadius: '4px' }}
-            onTimeUpdate={handleTimeUpdate}
-            onDurationChange={handleDurationChange}
-            onEnded={() => setPlaying(false)}
-            controls={false}
-          />
-        ) : (
-          <audio
-            ref={mediaRef}
-            src={videoSrc}
-            style={{ width: '100%', borderRadius: '4px' }}
-            onTimeUpdate={handleTimeUpdate}
-            onDurationChange={handleDurationChange}
-            onEnded={() => setPlaying(false)}
-            controls={false}
-          />
-        )}
+        <video
+          ref={videoRef}
+          style={{ width: '100%', borderRadius: '4px' }}
+          onTimeUpdate={handleTimeUpdate}
+          onDurationChange={handleDurationChange}
+          onEnded={() => setPlaying(false)}
+          controls={false}
+        />
 
         <div style={{ marginTop: 16 }}>
           <Space style={{ width: '100%', justifyContent: 'space-between' }}>
