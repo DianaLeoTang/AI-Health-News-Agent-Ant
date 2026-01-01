@@ -2,7 +2,7 @@
  * @Author: Diana Tang
  * @Date: 2025-03-05 12:29:45
  * @LastEditors: Diana Tang
- * @Description: some descript着
+ * @Description: some description
  * @FilePath: /AI-Health-News-Agent-Ant/src/services/ant-design-pro/api.ts
  */
 // @ts-ignore
@@ -11,7 +11,9 @@ import { request } from '@umijs/max';
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://ai-health-news-back.netlify.app/.netlify/functions/api'
-    : 'http://localhost:4000';
+    : // : 'http://localhost:4000';
+      'http://localhost:8888/.netlify/functions/api';
+
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{
