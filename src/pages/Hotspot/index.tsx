@@ -7,7 +7,7 @@
  */
 import { FireTwoTone, SearchOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { Button, Card, List, Tag,Spin } from 'antd';
+import { Button, Card, List, Spin, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { getHotpot } from '@/services/ant-design-pro/api';
@@ -23,8 +23,8 @@ interface NewsItem {
 }
 
 const Hotspot: React.FC = () => {
-  const [position, setPosition] = useState<PaginationPosition>('bottom');
-  const [align, setAlign] = useState<PaginationAlign>('end');
+  const [position] = useState<PaginationPosition>('bottom');
+  const [align] = useState<PaginationAlign>('end');
   const [defaultPageSize] = useState(50);
   const [news, setNews] = useState<NewsItem[]>(newsMock);
   const [loading, setLoading] = useState(false);
@@ -65,71 +65,71 @@ const Hotspot: React.FC = () => {
           })}
         </Button>
         <Spin spinning={loading}>
-        {/* 第一级标题：提取extracted中的title和url，用Tag组件渲染 */}
-        {news &&
-          news.map(
-            (itemNew, index) =>
-              itemNew.status === 'success' && (
-                <>
-                  <div key={index} style={{ marginBottom: '20px', textAlign: 'center' }}>
-                    <a href={itemNew.extracted?.url} target="_blank" rel="noreferrer" >
-                      <Tag color="purple" style={{ fontSize: '18px' }}>
-                        {itemNew.title}
-                      </Tag>
-                    </a>
-                  </div>
-                  {/* 二级标题：使用List组件渲染links数组 */}
-                  {itemNew.links && itemNew.links.length > 0 && (
-                    <List
-                      itemLayout="horizontal"
-                      dataSource={itemNew.links}
-                      renderItem={(item, linkIndex) => (
-                        <List.Item>
-                          <List.Item.Meta
-                            avatar={
-                              <>
-                                <FireTwoTone /> <span>{linkIndex + 1}.</span>
-                              </>
-                            }
-                            title={
-                              <a href={item.url} target="_blank" rel="noreferrer" >
-                                {item.title}
-                              </a>
-                            }
-                          />
-                        </List.Item>
-                      )}
-                    />
-                  )}
-                  {/* 检查articles数组是否不为空，如果不为空则使用List组件渲染 */}
-                  {itemNew.articles && itemNew.articles.length > 0 && (
-                    <List
-                      pagination={{ position, align, defaultPageSize }}
-                      dataSource={itemNew.articles}
-                      renderItem={(article, articleIndex) => (
-                        <List.Item>
-                          <List.Item.Meta
-                            avatar={
-                              <>
-                                <FireTwoTone /> <span>{articleIndex + 1}.</span>
-                              </>
-                            }
-                            title={
-                              <a href={article.url} target="_blank" rel="noopener noreferrer">
-                                {article.title}
-                              </a>
-                            }
-                            description={article.date}
-                          />
-                          {article.summary}
-                        </List.Item>
-                      )}
-                    />
-                  )}
-                </>
-              ),
-          )}
-      </Spin>
+          {/* 第一级标题：提取extracted中的title和url，用Tag组件渲染 */}
+          {news &&
+            news.map(
+              (itemNew, index) =>
+                itemNew.status === 'success' && (
+                  <React.Fragment key={index}>
+                    <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                      <a href={itemNew.extracted?.url} target="_blank" rel="noreferrer">
+                        <Tag color="purple" style={{ fontSize: '18px' }}>
+                          {itemNew.title}
+                        </Tag>
+                      </a>
+                    </div>
+                    {/* 二级标题：使用List组件渲染links数组 */}
+                    {itemNew.links && itemNew.links.length > 0 && (
+                      <List
+                        itemLayout="horizontal"
+                        dataSource={itemNew.links}
+                        renderItem={(item, linkIndex) => (
+                          <List.Item key={linkIndex}>
+                            <List.Item.Meta
+                              avatar={
+                                <>
+                                  <FireTwoTone /> <span>{linkIndex + 1}.</span>
+                                </>
+                              }
+                              title={
+                                <a href={item.url} target="_blank" rel="noreferrer">
+                                  {item.title}
+                                </a>
+                              }
+                            />
+                          </List.Item>
+                        )}
+                      />
+                    )}
+                    {/* 检查articles数组是否不为空，如果不为空则使用List组件渲染 */}
+                    {itemNew.articles && itemNew.articles.length > 0 && (
+                      <List
+                        pagination={{ position, align, defaultPageSize }}
+                        dataSource={itemNew.articles}
+                        renderItem={(article, articleIndex) => (
+                          <List.Item key={articleIndex}>
+                            <List.Item.Meta
+                              avatar={
+                                <>
+                                  <FireTwoTone /> <span>{articleIndex + 1}.</span>
+                                </>
+                              }
+                              title={
+                                <a href={article.url} target="_blank" rel="noopener noreferrer">
+                                  {article.title}
+                                </a>
+                              }
+                              description={article.date}
+                            />
+                            {article.summary}
+                          </List.Item>
+                        )}
+                      />
+                    )}
+                  </React.Fragment>
+                ),
+            )}
+        </Spin>
       </Card>
     </>
   );

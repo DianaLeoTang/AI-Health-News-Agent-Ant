@@ -12,6 +12,7 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
+import { App } from 'antd';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
@@ -111,7 +112,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <>
+        <App>
           {children}
           {isDev && (
             <SettingDrawer
@@ -127,7 +128,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             />
           )}
           <AiAssistant />
-        </>
+        </App>
       );
     },
     ...initialState?.settings,
